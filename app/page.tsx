@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface Product {
   id: string;
@@ -41,6 +41,12 @@ export default function HomePage() {
   const [customerAddress, setCustomerAddress] = useState("");
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
+  // حسابات السلة تم تقديمها للأعلى لتجنب مشاكل القراءة والخطوط الحمراء
+  const totalItemsCount = cartItems.reduce((acc: number, item: CartItem) => acc + item.qty, 0);
+  const totalPrice = cartItems.reduce((acc: number, item: CartItem) => acc + item.price * item.qty, 0);
+  const shippingCost = totalPrice > 0 ? 25 : 0;
+  const finalTotal = totalPrice + shippingCost;
+
   const viewProductDetails = (product: Product) => {
     setSelectedProduct(product);
     setQuantity(1);
@@ -48,10 +54,10 @@ export default function HomePage() {
   };
 
   const addToCart = (product: Product, qty: number) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.id === product.id);
+    setCartItems((prevItems: CartItem[]) => {
+      const existingItem = prevItems.find((item: CartItem) => item.id === product.id);
       if (existingItem) {
-        return prevItems.map((item) =>
+        return prevItems.map((item: CartItem) =>
           item.id === product.id ? { ...item, qty: item.qty + qty } : item
         );
       }
@@ -61,7 +67,7 @@ export default function HomePage() {
   };
 
   const removeFromCart = (id: string) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
+    setCartItems(cartItems.filter((item: CartItem) => item.id !== id));
   };
 
   const handleGetLocation = () => {
@@ -90,15 +96,12 @@ export default function HomePage() {
       return;
     }
 
-    // تجهيز نص الرسالة وتنسيقها للواتساب
-    const productsList = cartItems.map(item => `- ${item.name} (الكمية: ${item.qty}) -> بسعر: ${item.price * item.qty} ر.س`).join("\n");
+    const productsList = cartItems.map((item: CartItem) => `- ${item.name} (الكمية: ${item.qty}) -> بسعر: ${item.price * item.qty} ر.س`).join("\n");
     const message = `طلب جديد من المتجر ✨\n\n👤 الاسم: ${customerName}\n📱 الجوال: ${customerPhone}\n📍 العنوان: ${customerAddress}\n\n📦 المنتجات:\n${productsList}\n\n💵 تكلفة الشحن: ${shippingCost} ر.س\n💰 الإجمالي الكلي: ${finalTotal} ر.س`;
     
-    // تم التحديث برقم جوالكِ مباشرة بالصيغة الدولية المعتمدة
     const myPhoneNumber = "966594547496"; 
     window.open(`https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
     
-    // تصفير السلة والعودة للرئيسية بعد التوجيه
     setCartItems([]);
     setCustomerName("");
     setCustomerPhone("");
@@ -106,12 +109,7 @@ export default function HomePage() {
     setCurrentView("home");
   };
 
-  const totalItemsCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
-  const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
-  const shippingCost = totalPrice > 0 ? 25 : 0;
-  const finalTotal = totalPrice + shippingCost;
-
-  const inputStyle: React.CSSProperties = {
+  const inputStyle: React.CSSProperties | { [key: string]: string | number } = {
     width: "100%",
     padding: "14px",
     borderRadius: "8px",
@@ -165,9 +163,9 @@ export default function HomePage() {
                 <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
                   <span style={{ fontWeight: "bold", color: "#000" }}>الكمية:</span>
                   <div style={{ display: "flex", alignItems: "center", border: "2px solid #000", borderRadius: 8, overflow: "hidden" }}>
-                    <button onClick={() => setQuantity(q => Math.max(1, q - 1))} style={{ padding: "8px 16px", backgroundColor: "#fff", border: "none", color: "#000", fontWeight: "bold", cursor: "pointer" }}>-</button>
+                    <button onClick={() => setQuantity((q: number) => Math.max(1, q - 1))} style={{ padding: "8px 16px", backgroundColor: "#fff", border: "none", color: "#000", fontWeight: "bold", cursor: "pointer" }}>-</button>
                     <span style={{ fontWeight: "bold", minWidth: 40, textAlign: "center" }}>{quantity}</span>
-                    <button onClick={() => setQuantity(q => q + 1)} style={{ padding: "8px 16px", backgroundColor: "#fff", border: "none", color: "#000", fontWeight: "bold", cursor: "pointer" }}>+</button>
+                    <button onClick={() => setQuantity((q: number) => q + 1)} style={{ padding: "8px 16px", backgroundColor: "#fff", border: "none", color: "#000", fontWeight: "bold", cursor: "pointer" }}>+</button>
                   </div>
                 </div>
                 <button onClick={() => addToCart(selectedProduct, quantity)} style={{ backgroundColor: "#5c3a21", color: "white", border: "none", padding: "14px 32px", borderRadius: 10, fontSize: "1.1rem", cursor: "pointer", fontWeight: "bold" }}>إضافة إلى السلة 🛒</button>

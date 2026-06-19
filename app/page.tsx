@@ -2,266 +2,273 @@
 
 import React, { useState } from "react";
 
+// واجهة تعريف نوع المنتج
 interface Product {
-  id: string;
+  id: number;
   name: string;
   price: number;
-  description: string;
   image: string;
+  description: string;
 }
 
+// واجهة تعريف عناصر السلة
+interface CartItem extends Product {
+  quantity: number;
+}
+
+// مصفوفة المنتجات (يمكنكِ تعديل الروابط والصور مستقبلاً بكل سهولة)
 const products: Product[] = [
-  { id: "p1", name: "كوب سيراميك دافئ", price: 49, description: "كوب مصنوع يدويًا من السيراميك الفاخر بتصميم ريفي دافئ ومريح لليدين.", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=1000&auto=format&fit=crop" },
-  { id: "p2", name: "شمعة عطرية طبيعية", price: 79, description: "شمعة من شمع الصويا العضوي الفاخر برائحة الفانيليا الدافئة لتهيئة أجواء هادئة.", image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?q=80&w=1000&auto=format&fit=crop" },
-  { id: "p3", name: "حبوب قهوة مختصة", price: 99, description: "محصول قهوة فاخر ومختار بعناية من مرتفعات إثيوبيا بإيحاءات كلاسيكية مميزة.", image: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=1000&auto=format&fit=crop" },
-  { id: "p4", name: "دفتر ملاحظات جلدي", price: 120, description: "دفتر أجندة بغلاف مصنوع من الجلد الطبيعي الفاخر باللون البني ومريح جداً للكتابة.", image: "https://images.unsplash.com/photo-1531346878377-a5be20888e57?q=80&w=1000&auto=format&fit=crop" },
-  { id: "p5", name: "شوكولاتة داكنة عضوية", price: 35, description: "شوكولاتة داكنة بنسبة 70% محضرة يدوياً بنكهة الكراميل المملح الغنية.", image: "https://images.unsplash.com/photo-1548907040-4d42b52115ca?q=80&w=1000&auto=format&fit=crop" },
-  { id: "p6", name: "وعاء خشبي ريفي", price: 150, description: "وعاء تقديم مصنوع من خشب الزيتون الطبيعي بنقوش وتعرجات فريدة وأنيقة.", image: "https://images.unsplash.com/photo-1610701596007-11502861afaa?q=80&w=1000&auto=format&fit=crop" },
-  { id: "p7", name: "إبريق تقطير القهوة", price: 165, description: "إبريق لتقطير القهوة برقبة الإوزة لانسياب مثالي، مطلي بالنحاس الكلاسيكي.", image: "https://images.unsplash.com/photo-1577968897464-4bf882181190?q=80&w=1000&auto=format&fit=crop" },
-  { id: "p8", name: "حقيبة كتان بيئية", price: 89, description: "حقيبة كتف واسعة مصنوعة من قماش الكتان الطبيعي السميك للاستخدام اليومي.", image: "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=1000&auto=format&fit=crop" },
-  { id: "p9", name: "حافظ جلدي للأكواب", price: 45, description: "حامل أكواب أنيق مصنوع من الجلد الطبيعي لحماية يديك من حرارة المشروبات.", image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=1000&auto=format&fit=crop" },
-  { id: "p10", name: "مبخرة سيراميك حجرية", price: 55, description: "مبخرة عصرية ناعمة بتصميم حجري جذاب لتوزيع البخور بشكل انسيابي.", image: "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?q=80&w=1000&auto=format&fit=crop" },
-  { id: "p11", name: "مطحنة قهوة خشبية", price: 135, description: "مطحنة حبوب يدوية بتروس سيراميك متينة وهيكل خشبي ناعم وناصع.", image: "https://images.unsplash.com/photo-1588244908146-239567b31c7f?q=80&w=1000&auto=format&fit=crop" },
-  { id: "p12", name: "صندوق هدايا المتجر", price: 70, description: "صندوق كرتوني سميك بلون بني كلاسيكي مزين بشريط قماشي فخم للإهداء.", image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=1000&auto=format&fit=crop" }
+  {
+    id: 1,
+    name: "كوب سيراميك دافئ",
+    price: 49,
+    image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=400",
+    description: "كوب مصنوع يدوياً من السيراميك الفاخر ليحفظ حرارة قهوتك."
+  },
+  {
+    id: 2,
+    name: "شمعة عطرية طبيعية",
+    price: 79,
+    image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?q=80&w=400",
+    description: "شمعة من شمع الصويا الطبيعي بنفحات اللافندر والفانيليا المهدئة."
+  },
+  {
+    id: 3,
+    name: "حبوب قهوة مختصة",
+    price: 99,
+    image: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=400",
+    description: "حبوب قهوة كاملة محمصة بعناية تناسب مشروبات المقطرة والإسبريسو."
+  },
+  {
+    id: 4,
+    name: "دفتر ملاحظات جلدي",
+    price: 120,
+    image: "https://images.unsplash.com/photo-1531346878377-a5be20888e57?q=80&w=400",
+    description: "دفتر ملاحظات بغلاف من الجلد الطبيعي لحفظ أفكارك اليومية."
+  },
+  {
+    id: 5,
+    name: "حقيبة كتان بيئية",
+    price: 69,
+    image: "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=400",
+    description: "حقيبة كتف متينة ومصنوعة من مواد صديقة للبيئة للاستخدام اليومي."
+  },
+  {
+    id: 6,
+    name: "إبريق تقطير القهوة",
+    price: 165,
+    image: "https://images.unsplash.com/photo-1577968897966-3d4325b36b61?q=80&w=400",
+    description: "إبريق ستانلس ستيل بعنق البجعة لتدفق مياه مثالي وموزع بدقة."
+  }
 ];
 
-interface CartItem extends Product {
-  qty: number;
-}
-
 export default function HomePage() {
-  const [currentView, setCurrentView] = useState<string>("home");
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [quantity, setQuantity] = useState<number>(1);
+  const [currentView, setCurrentView] = useState<"home" | "cart">("home");
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
+  // المتغيرات الجديدة الخاصة ببيانات الزبون والمدينة
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [customerCity, setCustomerCity] = useState("المدينة المنورة");
   const [customerAddress, setCustomerAddress] = useState("");
-  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
-  // حسابات السلة تم تقديمها للأعلى لتجنب مشاكل القراءة والخطوط الحمراء
-  const totalItemsCount = cartItems.reduce((acc: number, item: CartItem) => acc + item.qty, 0);
-  const totalPrice = cartItems.reduce((acc: number, item: CartItem) => acc + item.price * item.qty, 0);
-  const shippingCost = totalPrice > 0 ? 25 : 0;
-  const finalTotal = totalPrice + shippingCost;
-
-  const viewProductDetails = (product: Product) => {
-    setSelectedProduct(product);
-    setQuantity(1);
-    setCurrentView("detail");
-  };
-
-  const addToCart = (product: Product, qty: number) => {
-    setCartItems((prevItems: CartItem[]) => {
-      const existingItem = prevItems.find((item: CartItem) => item.id === product.id);
+  // إضافة منتج إلى السلة
+  const addToCart = (product: Product) => {
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find((item) => item.id === product.id);
       if (existingItem) {
-        return prevItems.map((item: CartItem) =>
-          item.id === product.id ? { ...item, qty: item.qty + qty } : item
+        return prevItems.map((item) =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
-      return [...prevItems, { ...product, qty }];
+      return [...prevItems, { ...product, quantity: 1 }];
     });
-    alert(`تمت إضافة ${qty} من (${product.name}) إلى السلة!`);
+    setIsCartOpen(true);
   };
 
-  const removeFromCart = (id: string) => {
-    setCartItems(cartItems.filter((item: CartItem) => item.id !== id));
-  };
-
-  const handleGetLocation = () => {
-    if (!navigator.geolocation) {
-      alert("متصفحك لا يدعم خاصية تحديد الموقع الجغرافي.");
-      return;
-    }
-    setIsLoadingLocation(true);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setCustomerAddress(`الموقع الفعلي: (خط العرض: ${latitude.toFixed(4)}, خط الطول: ${longitude.toFixed(4)})`);
-        setIsLoadingLocation(false);
-      },
-      () => {
-        alert("تعذر جلب موقعك، يرجى تفعيل الـ GPS والسماح للمتصفح بالوصول.");
-        setIsLoadingLocation(false);
-      }
+  // تحديث كمية المنتج في السلة
+  const updateQuantity = (id: number, amount: number) => {
+    setCartItems((prevItems) =>
+      prevItems
+        .map((item) => (item.id === id ? { ...item, quantity: item.quantity + amount } : item))
+        .filter((item) => item.quantity > 0)
     );
   };
 
+  // حساب إجمالي السعر
+  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  // إرسال الطلب عبر الواتساب شامل المدينة والعنوان بالتفصيل
   const handleCheckoutSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customerName || !customerPhone || !customerAddress) {
-      alert("الرجاء تعبئة جميع الحقول المطلوبة.");
-      return;
-    }
 
-    const productsList = cartItems.map((item: CartItem) => `- ${item.name} (الكمية: ${item.qty}) -> بسعر: ${item.price * item.qty} ر.س`).join("\n");
-    const message = `طلب جديد من المتجر ✨\n\n👤 الاسم: ${customerName}\n📱 الجوال: ${customerPhone}\n📍 العنوان: ${customerAddress}\n\n📦 المنتجات:\n${productsList}\n\n💵 تكلفة الشحن: ${shippingCost} ر.س\n💰 الإجمالي الكلي: ${finalTotal} ر.س`;
-    
-    const myPhoneNumber = "966594547496"; 
-    window.open(`https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
-    
+    const myPhoneNumber = "966594547496"; // رقم الواتساب الخاص بكِ
+
+    const itemsText = cartItems
+      .map((item) => `- ${item.name} (عدد: ${item.quantity}) بسعر: ${item.price * item.quantity} ر.س`)
+      .join("\n");
+
+    const messageText =
+      `*طلب جديد من المتجر الإلكتروني* 🛍️\n\n` +
+      `*المنتجات المطلوبة:*\n${itemsText}\n\n` +
+      `*الإجمالي النهائي:* ${totalPrice} ر.س\n\n` +
+      `*بيانات الشحن والتوصيل:*\n` +
+      `👤 الاسم: ${customerName}\n` +
+      `📱 رقم الجوال: ${customerPhone}\n` +
+      `📍 المدينة: ${customerCity}\n` +
+      `🏠 العنوان بالتفصيل: ${customerAddress}`;
+
+    window.open(`https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(messageText)}`);
+
+    // تنظيف الحقول والسلة تلقائياً بعد إرسال الطلب
     setCartItems([]);
     setCustomerName("");
     setCustomerPhone("");
+    setCustomerCity("المدينة المنورة");
     setCustomerAddress("");
+    setIsCartOpen(false);
     setCurrentView("home");
   };
 
-  const inputStyle: React.CSSProperties | { [key: string]: string | number } = {
+  const inputStyle: React.CSSProperties = {
     width: "100%",
-    padding: "14px",
+    padding: "12px",
     borderRadius: "8px",
     border: "2px solid #000000",
     fontFamily: "inherit",
     fontSize: "1rem",
-    backgroundColor: "#ffffff",
-    color: "#000000",
-    outline: "none",
     boxSizing: "border-box"
   };
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui, sans-serif", direction: "rtl", backgroundColor: "#f7f2ed", minHeight: "100vh" }}>
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-        <h1 onClick={() => setCurrentView("home")} style={{ margin: 0, fontSize: "2.5rem", color: "#5c3a21", fontWeight: "bold", cursor: "pointer" }}>
-          متجري
+    <div style={{ fontFamily: "system-ui, sans-serif", backgroundColor: "#fcf9f5", color: "#333", minHeight: "100vh", direction: "rtl" }}>
+      {/* الهيدر العلوي */}
+      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 40px", backgroundColor: "#ffffff", borderBottom: "1px solid #eee", position: "sticky", top: 0, zIndex: 50 }}>
+        <h1 style={{ margin: 0, fontSize: "1.8rem", color: "#4a3c31", cursor: "pointer" }} onClick={() => { setCurrentView("home"); setIsCartOpen(false); }}>
+          متجري المتميز
         </h1>
-        <button onClick={() => setIsCartOpen(true)} style={{ color: "white", backgroundColor: "#5c3a21", border: "none", padding: "10px 20px", borderRadius: 20, fontWeight: "600", cursor: "pointer", display: "flex", gap: 8, alignItems: "center", boxShadow: "0 2px 5px rgba(0,0,0,0.1)" }}>
+        <button
+          onClick={() => setIsCartOpen(!isCartOpen)}
+          style={{ padding: "10px 20px", backgroundColor: "#4a3c31", color: "#fff", border: "none", borderRadius: "25px", fontSize: "1rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
+        >
           <span>🛒 السلة</span>
-          <span style={{ backgroundColor: "#7a5230", padding: "2px 8px", borderRadius: "50%", fontSize: "0.85rem", fontWeight: "bold" }}>{totalItemsCount}</span>
+          <span style={{ backgroundColor: "#fff", color: "#4a3c31", padding: "2px 8px", borderRadius: "50%", fontSize: "0.9rem", fontWeight: "bold" }}>
+            {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+          </span>
         </button>
       </header>
 
+      {/* الواجهة الرئيسية للمنتجات */}
       {currentView === "home" && (
-        <div>
-          <p style={{ marginTop: 16, color: "#333", fontWeight: "500" }}>اختاري منتج:</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 20 }}>
-            {products.map((p) => (
-              <div key={p.id} style={{ border: "1px solid #d1c7bd", borderRadius: 16, padding: 16, backgroundColor: "#ffffff", boxShadow: "0 4px 6px rgba(0,0,0,0.05)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                <img src={p.image} alt={p.name} style={{ width: "100%", height: "220px", objectFit: "cover", borderRadius: 12, marginBottom: 12 }} />
-                <h3 style={{ margin: "0 0 8px", color: "#5c3a21", fontSize: "1.2rem" }}>{p.name}</h3>
-                <div style={{ marginBottom: 12, fontWeight: "bold", color: "#7a5230", fontSize: "1.1rem" }}>{p.price} ر.س</div>
-                <button onClick={() => viewProductDetails(p)} style={{ color: "#0066cc", background: "none", border: "none", padding: 0, textAlign: "right", font: "inherit", fontWeight: "600", cursor: "pointer" }}>عرض المنتج ←</button>
+        <main style={{ padding: "40px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "30px" }}>
+            {products.map((product) => (
+              <div key={product.id} style={{ backgroundColor: "#ffffff", borderRadius: "12px", overflow: "hidden", border: "1px solid #eaeaea", boxShadow: "0 4px 6px rgba(0,0,0,0.02)", display: "flex", flexDirection: "column" }}>
+                <img src={product.image} alt={product.name} style={{ width: "100%", height: "240px", objectFit: "cover" }} />
+                <div style={{ padding: "20px", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                  <h3 style={{ margin: "0 0 10px 0", fontSize: "1.3rem", color: "#4a3c31" }}>{product.name}</h3>
+                  <p style={{ margin: "0 0 15px 0", fontSize: "0.95rem", color: "#666", lineHeight: 1.5, flexGrow: 1 }}>{product.description}</p>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" }}>
+                    <span style={{ fontSize: "1.2rem", fontWeight: "bold", color: "#4a3c31" }}>{product.price} ر.س</span>
+                    <button
+                      onClick={() => addToCart(product)}
+                      style={{ padding: "8px 16px", backgroundColor: "#b58263", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold", fontSize: "0.95rem" }}
+                    >
+                      إضافة للسلة +
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
-        </div>
+        </main>
       )}
 
-      {currentView === "detail" && (
-        <div>
-          <button onClick={() => setCurrentView("home")} style={{ color: "#5c3a21", background: "none", border: "none", padding: 0, font: "inherit", fontWeight: "600", cursor: "pointer", marginBottom: 24 }} > ← العودة لجميع المنتجات </button>
-          {selectedProduct && (
-            <div style={{ backgroundColor: "#ffffff", border: "1px solid #d1c7bd", borderRadius: 20, padding: 32, boxShadow: "0 6px 12px rgba(0,0,0,0.05)", display: "flex", flexDirection: "column", gap: 24 }}>
-              <img src={selectedProduct.image} alt={selectedProduct.name} style={{ width: "100%", maxHeight: "500px", objectFit: "cover", borderRadius: 16 }} />
-              <div>
-                <h1 style={{ color: "#5c3a21", margin: "0 0 16px 0" }}>{selectedProduct.name}</h1>
-                <p style={{ color: "#555", fontSize: "1.1rem", lineHeight: "1.6", marginBottom: 24 }}>{selectedProduct.description}</p>
-                <div style={{ fontSize: "1.8rem", fontWeight: "bold", color: "#7a5230", marginBottom: 24 }}>السعر: {selectedProduct.price} ر.س</div>
-                <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
-                  <span style={{ fontWeight: "bold", color: "#000" }}>الكمية:</span>
-                  <div style={{ display: "flex", alignItems: "center", border: "2px solid #000", borderRadius: 8, overflow: "hidden" }}>
-                    <button onClick={() => setQuantity((q: number) => Math.max(1, q - 1))} style={{ padding: "8px 16px", backgroundColor: "#fff", border: "none", color: "#000", fontWeight: "bold", cursor: "pointer" }}>-</button>
-                    <span style={{ fontWeight: "bold", minWidth: 40, textAlign: "center" }}>{quantity}</span>
-                    <button onClick={() => setQuantity((q: number) => q + 1)} style={{ padding: "8px 16px", backgroundColor: "#fff", border: "none", color: "#000", fontWeight: "bold", cursor: "pointer" }}>+</button>
-                  </div>
-                </div>
-                <button onClick={() => addToCart(selectedProduct, quantity)} style={{ backgroundColor: "#5c3a21", color: "white", border: "none", padding: "14px 32px", borderRadius: 10, fontSize: "1.1rem", cursor: "pointer", fontWeight: "bold" }}>إضافة إلى السلة 🛒</button>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {currentView === "checkout" && (
-        <div>
-          <button onClick={() => setCurrentView("home")} style={{ color: "#5c3a21", background: "none", border: "none", padding: 0, font: "inherit", fontWeight: "600", cursor: "pointer", marginBottom: 24 }} > ← إلغاء والعودة للمتجر </button>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 32 }}>
-            <div style={{ backgroundColor: "white", padding: 24, borderRadius: 16, border: "1px solid #d1c7bd" }}>
-              <h2 style={{ color: "#5c3a21", marginTop: 0, marginBottom: 20 }}>معلومات الشحن والتوصيل</h2>
-              <form onSubmit={handleCheckoutSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                <div>
-                  <label style={{ display: "block", marginBottom: 6, fontWeight: "600" }}>الاسم الكامل *</label>
-                  <input type="text" required value={customerName} onChange={(e) => setCustomerName(e.target.value)} style={inputStyle} placeholder="اسم المستلم الفعلي" />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", marginBottom: 6, fontWeight: "600" }}>رقم الجوال *</label>
-                  <input type="tel" required value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} style={{ ...inputStyle, direction: "ltr", textAlign: "right" }} placeholder="05xxxxxxxx" />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", marginBottom: 6, fontWeight: "600" }}>عنوان التوصيل بالتفصيل *</label>
-                  <button type="button" onClick={handleGetLocation} disabled={isLoadingLocation} style={{ width: "100%", backgroundColor: "#e0d4c8", color: "#5c3a21", border: "2px dashed #5c3a21", padding: "10px", borderRadius: "8px", fontWeight: "bold", marginBottom: "10px", cursor: "pointer" }}>
-                    📍 {isLoadingLocation ? "جاري تحديد مكانك..." : "تحديد موقعي التلقائي عبر الخريطة"}
-                  </button>
-                  <textarea required rows={3} value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} style={{ ...inputStyle, resize: "none" }} placeholder="المدينة، الحي، اسم الشارع" />
-                </div>
-
-                <button type="submit" style={{ backgroundColor: "#25D366", color: "white", border: "none", padding: "14px", borderRadius: 10, fontWeight: "bold", fontSize: "1.1rem", cursor: "pointer", marginTop: 12, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-                  تأكيد الطلب عبر الواتساب 💬
-                </button>
-              </form>
+      {/* شريط السلة الجانبي ونموذج الشحن الخفيف */}
+      {isCartOpen && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.4)", zIndex: 100, display: "flex", justifyContent: "flex-start" }}>
+          <div style={{ width: "100%", maxWidth: "450px", backgroundColor: "#fff", height: "100%", padding: "30px", boxSizing: "border-box", display: "flex", flexDirection: "column", overflowY: "auto", boxShadow: "5px 0 15px rgba(0,0,0,0.1)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "25px", borderBottom: "2px solid #eee", paddingBottom: "15px" }}>
+              <h2 style={{ margin: 0, color: "#4a3c31" }}>سلة المشتريات</h2>
+              <button onClick={() => setIsCartOpen(false)} style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "#aaa" }}>✕</button>
             </div>
 
-            <div style={{ backgroundColor: "#fff", padding: 24, borderRadius: 16, border: "1px solid #d1c7bd", height: "fit-content" }}>
-              <h2 style={{ color: "#5c3a21", marginTop: 0, marginBottom: 20 }}>ملخص الطلب</h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20, maxHeight: 250, overflowY: "auto" }}>
-                {cartItems.map(item => (
-                  <div key={item.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #f5f5f5", paddingBottom: 8 }}>
-                    <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                      <img src={item.image} alt={item.name} style={{ width: 40, height: 40, objectFit: "cover", borderRadius: 6 }} />
-                      <div>
-                        <span style={{ fontWeight: "600", display: "block" }}>{item.name}</span>
-                        <span style={{ fontSize: "0.85rem", color: "#666" }}>الكمية: {item.qty}</span>
+            {cartItems.length === 0 ? (
+              <p style={{ textAlign: "center", color: "#777", marginTop: "40px" }}>السلة فارغة حالياً 🧐</p>
+            ) : (
+              <>
+                {/* عرض المنتجات داخل السلة */}
+                <div style={{ flexGrow: 1, overflowY: "auto", marginBottom: "20px" }}>
+                  {cartItems.map((item) => (
+                    <div key={item.id} style={{ display: "flex", gap: "15px", alignItems: "center", padding: "12px 0", borderBottom: "1px solid #f5f5f5" }}>
+                      <img src={item.image} alt={item.name} style={{ width: "60px", height: "60px", borderRadius: "8px", objectFit: "cover" }} />
+                      <div style={{ flexGrow: 1 }}>
+                        <h4 style={{ margin: "0 0 5px 0", fontSize: "1rem", color: "#4a3c31" }}>{item.name}</h4>
+                        <span style={{ fontSize: "0.95rem", color: "#b58263", fontWeight: "bold" }}>{item.price * item.quantity} ر.س</span>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <button onClick={() => updateQuantity(item.id, 1)} style={{ width: "28px", height: "28px", borderRadius: "50%", border: "1px solid #ccc", background: "#fff", cursor: "pointer" }}>+</button>
+                        <span style={{ fontWeight: "bold" }}>{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.id, -1)} style={{ width: "28px", height: "28px", borderRadius: "50%", border: "1px solid #ccc", background: "#fff", cursor: "pointer" }}>-</button>
                       </div>
                     </div>
-                    <span style={{ fontWeight: "600", color: "#7a5230" }}>{item.price * item.qty} ر.س</span>
-                  </div>
-                ))}
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10, borderTop: "2px dashed #eee", paddingTop: 16 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", color: "#555" }}><span>مجموع المنتجات:</span><span>{totalPrice} ر.س</span></div>
-                <div style={{ display: "flex", justifyContent: "space-between", color: "#555" }}><span>تكلفة الشحن والتوصيل:</span><span>{shippingCost} ر.س</span></div>
-                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: "bold", fontSize: "1.3rem", color: "#5c3a21", marginTop: 8 }}><span>الإجمالي الكلي:</span><span>{finalTotal} ر.س</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+                  ))}
+                </div>
 
-      {isCartOpen && (
-        <div style={{ position: "fixed", top: 0, right: 0, width: "360px", height: "100vh", backgroundColor: "#ffffff", boxShadow: "-4px 0 16px rgba(0,0,0,0.15)", zIndex: 100, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #eee", paddingBottom: 12, marginBottom: 16 }}>
-              <h2 style={{ margin: 0, color: "#5c3a21" }}>سلة المشتريات</h2>
-              <button onClick={() => setIsCartOpen(false)} style={{ background: "none", border: "none", fontSize: "1.8rem", cursor: "pointer", color: "#000", fontWeight: "bold" }}>×</button>
-            </div>
-            {cartItems.length === 0 ? ( <p style={{ color: "#777", textAlign: "center", marginTop: 40 }}>السلة فارغة حالياً 🧺</p> ) : (
-              <div style={{ overflowY: "auto", maxHeight: "65vh" }}>
-                {cartItems.map((item) => (
-                  <div key={item.id} style={{ display: "flex", gap: 12, marginBottom: 16, alignItems: "center", borderBottom: "1px solid #f9f9f9", paddingBottom: 12 }}>
-                    <img src={item.image} alt={item.name} style={{ width: 65, height: 65, objectFit: "cover", borderRadius: 8 }} />
-                    <div style={{ flexGrow: 1 }}>
-                      <h4 style={{ margin: "0 0 4px 0", color: "#5c3a21" }}>{item.name}</h4>
-                      <div style={{ fontSize: "0.9rem", color: "#7a5230", fontWeight: "600" }}>{item.price} ر.س × {item.qty}</div>
-                    </div>
-                    <button onClick={() => removeFromCart(item.id)} style={{ background: "none", border: "none", color: "#ff3333", cursor: "pointer", fontSize: "0.9rem", fontWeight: "bold" }}>حذف</button>
+                <div style={{ borderTop: "2px solid #eee", paddingTop: "15px", marginBottom: "20px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.2rem", fontWeight: "bold", color: "#4a3c31" }}>
+                    <span>الإجمالي:</span>
+                    <span>{totalPrice} ر.س</span>
                   </div>
-                ))}
-              </div>
+                </div>
+
+                {/* نموذج الشحن البديل التلقائي لخطوط الطول والعرض */}
+                <form onSubmit={handleCheckoutSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                  <h3 style={{ margin: "10px 0 5px 0", fontSize: "1.1rem", color: "#4a3c31", borderBottom: "1px solid #eee", paddingBottom: "5px" }}>بيانات التوصيل لشحن سريع:</h3>
+                  
+                  <div>
+                    <label style={{ display: "block", marginBottom: "4px", fontWeight: "bold", fontSize: "0.9rem" }}>الاسم الكريم:</label>
+                    <input type="text" placeholder="اكتب اسمك الكامل" value={customerName} onChange={(e) => setCustomerName(e.target.value)} required style={inputStyle} />
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", marginBottom: "4px", fontWeight: "bold", fontSize: "0.9rem" }}>رقم الجوال:</label>
+                    <input type="tel" placeholder="05xxxxxxxx" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} required style={inputStyle} />
+                  </div>
+
+                  {/* قائمة اختيار المدينة المنسدلة بديلة الجيولكيشن */}
+                  <div>
+                    <label style={{ display: "block", marginBottom: "4px", fontWeight: "bold", fontSize: "0.9rem" }}>المدينة:</label>
+                    <select value={customerCity} onChange={(e) => setCustomerCity(e.target.value)} required style={inputStyle}>
+                      <option value="المدينة المنورة">المدينة المنورة</option>
+                      <option value="الرياض">الرياض</option>
+                      <option value="جدة">جدة</option>
+                      <option value="مكة المكرمة">مكة المكرمة</option>
+                      <option value="الدمام">الدمام</option>
+                      <option value="القصيم">القصيم</option>
+                      <option value="أبها">أبها</option>
+                    </select>
+                  </div>
+
+                  {/* حقل تفاصيل العنوان النصي المباشر */}
+                  <div>
+                    <label style={{ display: "block", marginBottom: "4px", fontWeight: "bold", fontSize: "0.9rem" }}>العنوان بالتفصيل (الحي / الشارع):</label>
+                    <input type="text" placeholder="مثال: حي العزيزية - شارع الإمام البخاري" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} required style={inputStyle} />
+                  </div>
+
+                  <button
+                    type="submit"
+                    style={{ width: "100%", padding: "14px", backgroundColor: "#25D366", color: "#fff", border: "none", borderRadius: "8px", fontSize: "1.1rem", fontWeight: "bold", cursor: "pointer", marginTop: "10px", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px" }}
+                  >
+                    🟢 تأكيد الطلب وإرسال عبر واتساب
+                  </button>
+                </form>
+              </>
             )}
           </div>
-          {cartItems.length > 0 && (
-            <div style={{ borderTop: "1px solid #eee", paddingTop: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", fontWeight: "bold", fontSize: "1.2rem", color: "#5c3a21", marginBottom: 16 }}><span>الإجمالي:</span><span>{totalPrice} ر.س</span></div>
-              <button onClick={() => { setIsCartOpen(false); setCurrentView("checkout"); }} style={{ width: "100%", backgroundColor: "#5c3a21", color: "white", border: "none", padding: "14px", borderRadius: 10, fontWeight: "bold", fontSize: "1.1rem", cursor: "pointer" }}> إتمام الطلب والدفع ✨ </button>
-            </div>
-          )}
         </div>
       )}
-    </main>
+    </div>
   );
 }
